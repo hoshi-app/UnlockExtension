@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="popup.css">
+</head>
+<body>
+
+<nav class="tabs">
+  <button class="tab active" data-tab="cors">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+    <span data-i18n="tabs.cors">CORS</span>
+  </button>
+  <button class="tab" data-tab="origin">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 1l4 4-4 4"/><path d="M7 23L3 19l4-4"/><path d="M21 5H3"/><path d="M3 19h18"/></svg>
+    <span data-i18n="tabs.origin">Origin/Ref</span>
+  </button>
+  <button class="tab" data-tab="headers">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H7a2 2 0 00-2 2v5a2 2 0 01-2 2 2 2 0 012 2v5a2 2 0 002 2h1"/><path d="M16 21h1a2 2 0 002-2v-5a2 2 0 012-2 2 2 0 01-2-2V5a2 2 0 00-2-2h-1"/></svg>
+    <span data-i18n="tabs.headers">Headers</span>
+  </button>
+  <button class="tab" data-tab="trusted">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 00-4-4H6a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M16 11l2 2 4-4"/></svg>
+    <span data-i18n="tabs.trusted">Trusted</span>
+  </button>
+  <button class="tab" data-tab="legal">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><path d="M14 2v6h6"/><path d="M16 13H8"/><path d="M16 17H8"/><path d="M10 9H9H8"/></svg>
+    <span data-i18n="tabs.legal">Legal</span>
+  </button>
+</nav>
+
+<div class="content">
+
+  <!-- CORS -->
+  <section id="tab-cors" class="tab-content active">
+    <p class="hint" data-i18n="cors.hint">Response headers added to bypass CORS (covers HLS/DASH .ts, .m3u8, .mpd)</p>
+    <div class="add-row">
+      <input id="cors-input" type="text" data-i18n-placeholder="cors.placeholder" placeholder="e.g. cdn.example.com" autocomplete="off">
+      <button id="cors-add" class="btn-primary" data-i18n="cors.add">Add</button>
+    </div>
+    <div id="cors-list" class="list"></div>
+  </section>
+
+  <!-- Origin / Referer -->
+  <section id="tab-origin" class="tab-content">
+    <p class="hint" data-i18n="origin.hint">Override Origin and Referer request headers per domain</p>
+    <div class="form-grid">
+      <input id="or-domain" type="text" data-i18n-placeholder="origin.domain" placeholder="Domain" autocomplete="off">
+      <input id="or-origin" type="text" data-i18n-placeholder="origin.originPlaceholder" placeholder="Origin (e.g. https://example.com)" autocomplete="off">
+      <input id="or-referer" type="text" data-i18n-placeholder="origin.refererPlaceholder" placeholder="Referer (e.g. https://example.com)" autocomplete="off">
+      <button id="or-add" class="btn-primary" data-i18n="origin.add">Add</button>
+    </div>
+    <div id="origin-list" class="list"></div>
+  </section>
+
+  <!-- Headers -->
+  <section id="tab-headers" class="tab-content">
+    <p class="hint" data-i18n="headers.hint">Inject custom headers into outgoing requests</p>
+    <div class="form-grid">
+      <input id="hdr-name" type="text" data-i18n-placeholder="headers.name" placeholder="Header name" autocomplete="off">
+      <input id="hdr-value" type="text" data-i18n-placeholder="headers.value" placeholder="Header value" autocomplete="off">
+      <input id="hdr-filter" type="text" data-i18n-placeholder="headers.filter" placeholder="URL filter (default: *)" autocomplete="off">
+      <button id="hdr-add" class="btn-primary" data-i18n="headers.add">Add</button>
+    </div>
+    <div id="headers-list" class="list"></div>
+  </section>
+
+  <!-- Trusted -->
+  <section id="tab-trusted" class="tab-content">
+    <div class="warning" data-i18n="trusted.warning">Do not add untrusted or unknown websites. Sites in this list can modify extension settings directly.</div>
+
+    <p class="hint" data-i18n="trusted.hint">Sites allowed to modify config via postMessage API</p>
+    <div class="add-row">
+      <input id="trust-input" type="text" data-i18n-placeholder="trusted.placeholder" placeholder="e.g. localhost, myapp.com" autocomplete="off">
+      <button id="trust-add" class="btn-primary" data-i18n="trusted.add">Add</button>
+    </div>
+    <div id="trusted-list" class="list"></div>
+
+    <hr>
+    <div class="toggle-row">
+      <label class="toggle-switch">
+        <input id="detection-toggle" type="checkbox">
+        <span class="toggle-track"></span>
+      </label>
+      <span class="toggle-row-label" data-i18n="trusted.detection">Detection block</span>
+      <span class="hint-inline" data-i18n="trusted.detectionHint">Invisible DOM element, sites can detect extension</span>
+    </div>
+  </section>
+
+  <!-- Legal -->
+  <section id="tab-legal" class="tab-content">
+    <div class="legal-text">
+      <h3 data-i18n="legal.title">Legal Disclaimer</h3>
+      <p data-i18n="legal.p1">UnlockExtension is a development and internal testing utility designed solely for use in controlled, non-production environments. It is intended exclusively for software developers and quality assurance professionals who require the ability to inspect, modify, and debug HTTP request and response headers during the development lifecycle.</p>
+      <p data-i18n="legal.p2">This extension must not be used to circumvent access controls, bypass security policies, or violate the terms of service of any website, service, or platform. Any such use is strictly prohibited and is the sole responsibility of the user. The authors and contributors of this software assume no liability for any misuse, damages, or legal consequences arising from its use.</p>
+      <p data-i18n="legal.p3">By installing and using UnlockExtension, you acknowledge that you are doing so at your own risk and that you are solely responsible for ensuring compliance with all applicable laws, regulations, and contractual obligations. This software is provided "as is," without warranty of any kind, express or implied.</p>
+    </div>
+  </section>
+
+</div>
+
+<div class="status" id="status"><span class="status-dot"></span><span id="status-text" data-i18n="status.loading">Loading...</span></div>
+
+<script src="popup.js"></script>
+</body>
+</html>

@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<style>
+  :root {
+    --bg: #fff;
+    --fg: #1a1a1a;
+    --border: #e5e5e5;
+    --muted: #6b7280;
+    --danger: #dc2626;
+    --danger-bg: #fef2f2;
+    --danger-border: #fecaca;
+    --accent: #2563eb;
+    --verif-bg: #dcfce7;
+    --verif-fg: #166534;
+    --bg2: #f9fafb;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #1a1a2e;
+      --fg: #e5e5e5;
+      --border: #2d2d44;
+      --muted: #9ca3af;
+      --danger: #ef4444;
+      --danger-bg: #3b1212;
+      --danger-border: #7f1d1d;
+      --accent: #3b82f6;
+      --verif-bg: #064e3b;
+      --verif-fg: #6ee7b7;
+      --bg2: #232340;
+    }
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font: 13px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background: var(--bg);
+    color: var(--fg);
+    padding: 24px;
+    user-select: none;
+  }
+
+  .domain {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--fg);
+    word-break: break-all;
+    text-align: center;
+    margin: 8px 0;
+  }
+
+  .verified {
+    display: inline-block;
+    background: var(--verif-bg);
+    color: var(--verif-fg);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 999px;
+    margin-bottom: 8px;
+    text-align: center;
+    letter-spacing: 0.3px;
+  }
+
+  .alert {
+    background: var(--danger-bg);
+    border: 1px solid var(--danger-border);
+    border-radius: 6px;
+    padding: 12px 14px;
+    margin: 12px 0 16px;
+  }
+
+  .alert-title {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--danger);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    margin-bottom: 4px;
+  }
+
+  .alert-text {
+    font-size: 11px;
+    color: var(--fg);
+    line-height: 1.5;
+  }
+
+  .timer {
+    text-align: center;
+    font-size: 12px;
+    color: var(--muted);
+    margin-bottom: 16px;
+    font-weight: 500;
+  }
+
+  .btns {
+    display: flex;
+    gap: 10px;
+    justify-content: center;
+  }
+
+  button {
+    padding: 9px 22px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font: inherit;
+    font-size: 12px;
+    font-weight: 600;
+    transition: opacity .15s, background .15s;
+    outline: none;
+  }
+
+  .btn-reject {
+    background: var(--bg2);
+    color: var(--fg);
+    border: 1px solid var(--border);
+  }
+
+  .btn-reject:hover { background: var(--border); }
+
+  .btn-accept {
+    background: var(--danger);
+    color: #fff;
+    opacity: 0.4;
+    pointer-events: none;
+    transition: opacity .3s;
+  }
+
+  .btn-accept.ready {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  .btn-accept.ready:hover { background: #b91c1c; }
+
+  @media (prefers-color-scheme: dark) {
+    .btn-accept.ready:hover { background: #dc2626; }
+  }
+</style>
+</head>
+<body>
+
+<div class="verified" id="verified" style="display:none"></div>
+<div class="domain" id="domain"></div>
+
+<div class="alert">
+  <div class="alert-title" data-i18n="alertTitle">Dangerous Action</div>
+  <div class="alert-text" data-i18n="alertText">Granting trusted access allows this website to modify all extension settings — CORS bypass rules, header overrides, and the trusted sites list itself. Only proceed if you fully trust and control this website.</div>
+</div>
+
+<div class="timer" id="timer" data-i18n="timer">Accept available in 5s</div>
+
+<div class="btns">
+  <button class="btn-reject" id="reject" data-i18n="reject">Reject</button>
+  <button class="btn-accept" id="accept" data-i18n="accept">Accept</button>
+</div>
+
+<script src="confirm.js"></script>
+</body>
+</html>
