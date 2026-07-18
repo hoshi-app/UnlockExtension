@@ -18,6 +18,13 @@ const ALL_RESOURCES = [
 function cleanDomain(d) { return d.replace(/^https?:\/\//, "").split("/")[0] }
 function buildCondition(domain) { return { urlFilter: "||" + cleanDomain(domain) + "/", resourceTypes: ALL_RESOURCES } }
 
+function matchTrusted(host, domains) {
+  return domains.some(function(d) {
+    if (d.startsWith("*.")) { var base = d.slice(2); return host === base || host.endsWith("." + base) }
+    return host === d || host.endsWith("." + d)
+  })
+}
+
 function buildRules(config) {
   var rules = [], id = ID_CORS
 
@@ -69,8 +76,47 @@ getConfig().then(syncRules)
 
 chrome.runtime.onMessage.addListener(function(msg, sender, sendResponse) {
   if (msg.action === "getConfig") { getConfig().then(sendResponse); return true }
+
   if (msg.action === "saveConfig") {
     (async function() { await chrome.storage.sync.set(msg.config); await syncRules(msg.config); sendResponse({ ok: true }) })()
+    return true
+  }
+
+  if (msg.action === "trustedAction") {
+    (async function() {
+      var config = await getConfig()
+      var origin
+      try { origin = new URL(sender.url).hostname } catch {}
+      if (!origin || !matchTrusted(origin, TRUSTED_DOMAINS)) {
+        sendResponse({ ok: false, error: "untrusted origin" }); return
+      }
+
+      var m = Object.assign({}, config)
+      switch (msg.sub) {
+        case "addCorsDomain":
+          if (!m.corsDomains.includes(msg.data.domain)) m.corsDomains.push(msg.data.domain); break
+        case "removeCorsDomain":
+          m.corsDomains = m.corsDomains.filter(function(d) { return d !== msg.data.domain }); break
+        case "setOriginOverride":
+          m.originOverrides[msg.data.domain] = msg.data.origin; break
+        case "removeOriginOverride":
+          delete m.originOverrides[msg.data.domain]; break
+        case "setRefererOverride":
+          m.refererOverrides[msg.data.domain] = msg.data.referer; break
+        case "removeRefererOverride":
+          delete m.refererOverrides[msg.data.domain]; break
+        case "addHeader":
+          m.customHeaders.push({ name: msg.data.name, value: msg.data.value, urlFilter: msg.data.urlFilter || "*" }); break
+        case "removeHeader":
+          m.customHeaders = m.customHeaders.filter(function(_, i) { return i !== msg.data.index }); break
+        default:
+          sendResponse({ ok: false, error: "unknown action" }); return
+      }
+
+      await chrome.storage.sync.set(m)
+      await syncRules(m)
+      sendResponse({ ok: true })
+    })()
     return true
   }
 })

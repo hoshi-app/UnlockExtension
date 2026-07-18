@@ -15,6 +15,7 @@
       <span class="name">hoshi unlocker</span>
       <span class="version">v1.0.0</span>
     </div>
+    <a class="dev-link" id="dev-link" data-i18n="dev">dev</a>
   </div>
   <div class="status-row">
     <span class="status-dot" id="status-dot"></span>
@@ -22,6 +23,60 @@
   </div>
   <div class="count" id="domain-count"></div>
 </div>
+
+<div class="card dev-panel" id="dev-panel" style="display:none">
+  <nav class="tabs">
+    <button class="tab active" data-tab="cors" data-i18n="tabs.cors">CORS</button>
+    <button class="tab" data-tab="origin" data-i18n="tabs.origin">O/R</button>
+    <button class="tab" data-tab="headers" data-i18n="tabs.headers">HDR</button>
+    <button class="tab" data-tab="legal" data-i18n="tabs.legal">Legal</button>
+  </nav>
+
+  <div class="content">
+    <section id="tab-cors" class="tab-content active">
+      <p class="hint" data-i18n="cors.hint">Add Access-Control-Allow-* response headers</p>
+      <div class="add-row">
+        <input id="cors-input" type="text" data-i18n-placeholder="cors.placeholder" placeholder="e.g. cdn.example.com" autocomplete="off">
+        <button id="cors-add" class="btn-primary" data-i18n="cors.add">Add</button>
+      </div>
+      <div id="cors-list" class="list"></div>
+    </section>
+    <section id="tab-origin" class="tab-content">
+      <p class="hint" data-i18n="origin.hint">Override Origin and Referer per domain</p>
+      <div class="form-grid">
+        <input id="or-domain" type="text" data-i18n-placeholder="origin.domain" placeholder="Domain" autocomplete="off">
+        <input id="or-origin" type="text" data-i18n-placeholder="origin.originPlaceholder" placeholder="Origin" autocomplete="off">
+        <input id="or-referer" type="text" data-i18n-placeholder="origin.refererPlaceholder" placeholder="Referer" autocomplete="off">
+        <button id="or-add" class="btn-primary" data-i18n="origin.add">Add</button>
+      </div>
+      <div id="origin-list" class="list"></div>
+    </section>
+    <section id="tab-headers" class="tab-content">
+      <p class="hint" data-i18n="headers.hint">Inject custom headers</p>
+      <div class="form-grid">
+        <input id="hdr-name" type="text" data-i18n-placeholder="headers.name" placeholder="Name" autocomplete="off">
+        <input id="hdr-value" type="text" data-i18n-placeholder="headers.value" placeholder="Value" autocomplete="off">
+        <input id="hdr-filter" type="text" data-i18n-placeholder="headers.filter" placeholder="URL filter (*)" autocomplete="off">
+        <button id="hdr-add" class="btn-primary" data-i18n="headers.add">Add</button>
+      </div>
+      <div id="headers-list" class="list"></div>
+    </section>
+    <section id="tab-legal" class="tab-content">
+      <div class="legal-text">
+        <h3 data-i18n="legal.title">Legal Disclaimer</h3>
+        <p data-i18n="legal.p1">Development and internal testing utility.</p>
+        <p data-i18n="legal.p2">Must not be used to circumvent access controls.</p>
+        <p data-i18n="legal.p3">Provided "as is," without warranty.</p>
+      </div>
+    </section>
+  </div>
+
+  <div class="status-bar">
+    <span id="save-status" data-i18n="status.ready">Ready</span>
+    <button class="btn-close" id="btn-close">close dev</button>
+  </div>
+</div>
+
 <script src="popup.js"></script>
 </body>
 </html>
